@@ -1,48 +1,51 @@
 import os
 import zipfile
-import datetime
+from datetime import datetime
+
+# Fonction de log
+def log(message):
+    print(message)
+    # Créer le dossier logs si nécessaire
+    os.makedirs("logs", exist_ok=True)
+    with open("logs/backup.log", "a") as f:
+        f.write(f"[{datetime.now()}] {message}\n")
 
 def backup_and_compress(source_dir, backup_dir):
-    # Vérifier si le dossier source existe
     if not os.path.isdir(source_dir):
-        print("Le dossier source n'existe pas")
+        log("Le dossier source n'existe pas")
         return
 
-    # Créer automatiquement le dossier de destination s'il n'existe pas
     if not os.path.exists(backup_dir):
         os.makedirs(backup_dir)
 
-    # Créer un nom de fichier ZIP avec horodatage
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     zip_name = f"sauvegarde_{timestamp}.zip"
     zip_path = os.path.join(backup_dir, zip_name)
 
     try:
-        # Créer l'archive ZIP
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
             for root, dirs, files in os.walk(source_dir):
                 for file in files:
                     file_path = os.path.join(root, file)
-                    # On garde la structure relative du fichier pour la restauration
                     arcname = os.path.relpath(file_path, start=source_dir)
                     zipf.write(file_path, arcname)
-        print(f"Sauvegarde compressée créée : {zip_path}")
+        log(f"Sauvegarde compressée créée : {zip_path}")
     except Exception as e:
-        print(f"Erreur pendant la compression : {e}")
+        log(f"Erreur pendant la compression : {e}")
 
-# Exemple d'exécution manuelle
-if __name__ == "__main__":
-    import sys
+def test_log_file_contains_backup_message(self):
+    log_path = "logs/backup.log"
+    # Supprimer le log existant pour un test propre
+    if os.path.exists(log_path):
+        os.remove(log_path)
 
-    if len(sys.argv) != 3:
-        print("Utilisation : python backup.py dossier_source dossier_destination")
-    else:
-        source = sys.argv[1]
-        destination = sys.argv[2]
+    # Exécuter une sauvegarde
+    with io.StringIO() as buf, contextlib.redirect_stdout(buf):
+        backup_and_compress(self.source, self.dest)
 
-#        print(f"DEBUG - source : {source}")
-#        print(f"DEBUG - os.path.isdir(source) : {os.path.isdir(source)}")
-#        print(f"DEBUG - destination : {destination}")
-#        print(f"DEBUG - os.path.exists(destination) : {os.path.exists(destination)}")
+    self.assertTrue(os.path.exists(log_path))
 
-        backup_and_compress(source, destination)
+    with open(log_path, "r") as f:
+        content = f.read()
+
+    self.assertIn("Sauvegarde compressée créée", content)

@@ -1,51 +1,37 @@
+#!/usr/bin/env python3
+"""
+Script de Sauvegarde Automatique - Groupe 3
+Auteurs: Mohamed Bechir Diarra, Cecile Penda, Ousmane Camara, Aboubacar S Magasouba
+Version: 1.0
+"""
+
 import os
-import zipfile
-from datetime import datetime
+import shutil
+import datetime
 
-# Fonction de log
-def log(message):
-    print(message)
-    # Créer le dossier logs si nécessaire
-    os.makedirs("logs", exist_ok=True)
-    with open("logs/backup.log", "a") as f:
-        f.write(f"[{datetime.now()}] {message}\n")
-
-def backup_and_compress(source_dir, backup_dir):
+def backup_folder(source_dir, backup_dir):
+    # Vérifier si le dossier source existe
     if not os.path.isdir(source_dir):
-        log("Le dossier source n'existe pas")
+        print("Le dossier source n'existe pas")
         return
 
+    # Créer automatiquement le dossier de destination s'il n'existe pas
     if not os.path.exists(backup_dir):
         os.makedirs(backup_dir)
 
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    zip_name = f"sauvegarde_{timestamp}.zip"
-    zip_path = os.path.join(backup_dir, zip_name)
+    # Créer un nom unique pour la sauvegarde avec horodatage
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    backup_name = f"sauvegarde_{timestamp}"
+    destination_path = os.path.join(backup_dir, backup_name)
 
+    # Copier le dossier source vers la destination
     try:
-        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-            for root, dirs, files in os.walk(source_dir):
-                for file in files:
-                    file_path = os.path.join(root, file)
-                    arcname = os.path.relpath(file_path, start=source_dir)
-                    zipf.write(file_path, arcname)
-        log(f"Sauvegarde compressée créée : {zip_path}")
+        shutil.copytree(source_dir, destination_path)
+        print(f"Sauvegarde réussie dans : {destination_path}")
     except Exception as e:
-        log(f"Erreur pendant la compression : {e}")
+        print(f"Erreur pendant la sauvegarde : {e}")
 
-def test_log_file_contains_backup_message(self):
-    log_path = "logs/backup.log"
-    # Supprimer le log existant pour un test propre
-    if os.path.exists(log_path):
-        os.remove(log_path)
+ # pour tester decommentez cette partie en remplaçant les chemins (remplacer\ par / dans le chemin)
 
-    # Exécuter une sauvegarde
-    with io.StringIO() as buf, contextlib.redirect_stdout(buf):
-        backup_and_compress(self.source, self.dest)
-
-    self.assertTrue(os.path.exists(log_path))
-
-    with open(log_path, "r") as f:
-        content = f.read()
-
-    self.assertIn("Sauvegarde compressée créée", content)
+# if __name__ == "__main__":
+#     backup_folder("chemin/vers/source", "chemin/vers/destination")

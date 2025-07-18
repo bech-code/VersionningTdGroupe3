@@ -250,8 +250,7 @@ Exemples d'utilisation:
         print("\n⏹️  Sauvegarde annulée par l'utilisateur")
         return 1
     except Exception as e:
-        print(f"\n❌ Erreur: {e}")
-        return 1
+        print(f"Erreur pendant la sauvegarde : {e}")
 
 if __name__ == "__main__":
     sys.exit(main())

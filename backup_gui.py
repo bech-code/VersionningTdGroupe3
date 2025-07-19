@@ -25,7 +25,8 @@ class BackupGUI:
         self.root.title("🗂️ Sauvegarde Automatique - Groupe 3")
         self.root.geometry("800x600")
         self.root.resizable(True, True)
-        # ugdhifejirhnfirjhfijrioghriorh njkjkmkkkkkljljoj
+        #kkkbjlkhnjlksbhlihisjljlendlejslzjskzns
+
         # Variables
         self.source_var = tk.StringVar()
         self.dest_var = tk.StringVar()

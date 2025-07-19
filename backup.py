@@ -12,7 +12,7 @@ import logging
 import sys
 import argparse
 from pathlib import Path
-
+if(oku)
 class BackupManager:
     def __init__(self, log_level=logging.INFO):
         """Initialise le gestionnaire de sauvegarde avec logging"""
